@@ -34,6 +34,7 @@ class ChainedHash:
    if p.key == key:
     return p.value # 探索成功
    p = p.next # 後継ノードに着目
+   
   
   return None # 探索失敗
  
@@ -75,4 +76,5 @@ class ChainedHash:
     print(i, end='')
     while p is not None:
      print(f'　→ {p.key}（{p.value}）', end='')
+     p =p.next
     print()
