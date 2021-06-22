@@ -1,10 +1,10 @@
 # チェイン法によるハッシュ
 
 from __future__ import annotations
-from typing from Any, Type
+from typing import Any, Type
 import hashlib
 
-class:
+class Node:
  # ハッシュ関数を構成するノード
  def __init__(self, key: Any, value: Any, next: Node) -> Node:
   self.key = key # キー
@@ -22,7 +22,7 @@ class ChainedHash:
   # ハッシュ値を求める
   if isinstance(key, int):
    return key % self.capacity
-  return (int(hashlib.sha256(str(key).encode()).hexdigest(). 16)
+  return (int(hashlib.sha256(str(key).encode()).hexdigest(), 16)
    % self.capacity)
 
  def search(self, key: Any) ->  Any:
@@ -50,3 +50,29 @@ class ChainedHash:
   temp = Node(key, value, self.table[hash])
   self.table[hash] = temp # ノードを挿入
   return True #追跡成功
+
+ def remove(self, key: Any) -> bool:
+  # キーkeyを持つ要素の削除
+  hash = self.hash_value(key) # 削除するキーのハッシュ値
+  p = self.table[hash] # 着目ノード
+  pp = None # 前回の着目ノード
+
+  while p is not None:
+    if p.key == key: # 見つけたら
+      if pp is None:
+        self.table[hash] = p.next
+      else:
+        pp.next = p.next
+      return True # 削除成功
+    pp = p
+    p = p.next # 後続ノードに着目
+  return False # 削除失敗(keyは存在しない)
+ 
+ def dump(self) -> None:
+  # ハッシュ表をダンプ
+  for i in range(self.capacity):
+    p = self.table[i]
+    print(i, end='')
+    while p is not None:
+     print(f'　→ {p.key}（{p.value}）', end='')
+    print()
